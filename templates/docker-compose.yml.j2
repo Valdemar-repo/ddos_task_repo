@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     hostname: prometheus
     volumes:
-      - /root/prometheus_conf:/etc/prometheus:ro
+      - /root/ddos_task_host/prometheus_conf:/etc/prometheus:ro
     ports:
       - 9090:9090
     command:
@@ -20,8 +20,8 @@ services:
     restart: unless-stopped
     hostname: grafana
     volumes:
-      - /root/grafana_dashboards:/etc/grafana/provisioning/dashboards/
-      - /root/grafana_datasources:/etc/grafana/provisioning/datasources/
+      - /root/ddos_task_host/grafana_dashboards:/etc/grafana/provisioning/dashboards/
+      - /root/ddos_task_host/grafana_datasources:/etc/grafana/provisioning/datasources/
     ports:
       - 3000:3000
     depends_on:
