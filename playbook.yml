@@ -67,7 +67,7 @@
       template:
         src: templates/nftablesconf.j2
         dest: /etc/nftables.conf
-        mode: 755
+        mode: 0755
 
     - name: restart nftables
       when: server == "mariadb"
@@ -80,27 +80,27 @@
       copy:
         src: files/ddos_task_host
         dest: /root/
-        mode: 755
+        mode: 0755
 
     - name: create prometheus dir
       file:
         path: /root/ddos_task_host/prometheus_conf
         state: directory
-        mode: 755
+        mode: 0755
 
     - name: get prometheus config
       when: server == "observability"
       template:
         src: templates/prometheus.yml.j2
         dest: /root/ddos_task_host/prometheus_conf/prometheus.yml
-        mode: 755
+        mode: 0755
 
     - name: get docker-compose.yml
       when: server == "observability"
       template:
         src: templates/docker-compose.yml.j2
         dest: /root/ddos_task_host/docker-compose.yml
-        mode: 755
+        mode: 0755
 
     - name: up monitoring
       when: server == "observability"
