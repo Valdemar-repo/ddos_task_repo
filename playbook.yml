@@ -22,6 +22,7 @@
           - prometheus-node-exporter
           - mariadb-server
           - prometheus-mysqld-exporter
+        update_cache: True
 
     - name: add config .my.cnf
       when: server == "mariadb"
