@@ -78,8 +78,8 @@
     - name: clone metric vars_files
       when: server == "observability"
       copy:
-        src: files/monitoring/*
-        dest: /root/ddos_task_host
+        src: files/ddos_task_host
+        dest: /root/
         mode: 755
 
     - name: get prometheus config
