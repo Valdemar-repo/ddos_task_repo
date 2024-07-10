@@ -1,0 +1,29 @@
+---
+- name: Ensure deps installed
+  apt:
+    pkg:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg
+    - software-properties-common
+    - lsb-release
+    - python3-pexpect
+
+- name: Add apt keyring for docker
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    keyring: /etc/apt/keyrings/docker.asc
+    state: present
+
+- name: Add docker repo for apt
+  apt_repository:
+    repo: deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian {{ ansible_lsb.codename }} stable
+    state: present
+    filename: docker-ce
+
+- name: Ensure docker is installed
+  apt:
+    pkg:
+    - docker-ce
+    - docker-compose-plugin

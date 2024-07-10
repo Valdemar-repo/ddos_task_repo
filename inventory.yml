@@ -1,0 +1,13 @@
+sre:
+  hosts:
+    mariadb:
+      ansible_host: 91.222.237.187
+      ansible_user: root
+      ansible_port: 22
+      ansible_private_key_file: ~/.ssh/id_ed25519
+
+    observability:
+      ansible_host: 213.171.4.111
+      ansible_user: root
+      ansible_port: 22
+      ansible_private_key_file: ~/.ssh/id_ed25519

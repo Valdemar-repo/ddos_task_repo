@@ -1,0 +1,20 @@
+#!/usr/sbin/nft -f
+
+flush ruleset
+
+table inet firewall {
+	chain input {
+		type filter hook input priority filter;
+		tcp dport {{ node_exporter_port }} accept
+        tcp dport {{ sql_exporter_port }} accept
+        tcp dport {{ ssh_port }} accept
+		ct state established, related accept
+		policy drop;
+	}
+	chain forward {
+		type filter hook forward priority filter;
+	}
+	chain output {
+		type filter hook output priority filter; policy accept;
+	}
+}

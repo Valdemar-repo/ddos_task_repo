@@ -1,0 +1,11 @@
+---
+- name: Copy docker.json with proxy
+  copy:
+    src: files/docker.json
+    dest: /etc/docker/daemon.json
+    mode: 0644
+
+- name: Docker reload
+  systemd:
+    name: docker
+    state: reloaded

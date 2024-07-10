@@ -1,0 +1,75 @@
+---
+- name: client_config_playbook
+  hosts: all
+  become: yes
+  gather_facts: true
+
+  vars:
+    server: "{{ inventory_hostname }}"
+
+  vars_files:
+    - vars/main.yml
+
+  roles:
+    - role: docker
+      when: server == observability
+
+  tasks:
+    - name: install prometheus-node-exporter, mariadb, prometheus-mysqld-exporter
+      when: server == mariadb
+      apt:
+        name: 
+          - prometheus-node-exporter
+          - mariadb-server
+          - prometheus-mysqld-exporter
+
+    - name: add config .my.cnf
+      when: server == mariadb
+      template:
+        src: templates/.my.cnf.j2
+        dest: /var/lib/prometheus/.my.cnf
+        mode: 644
+
+    - name: start prometheus-node-exporter
+      when: server == mariadb
+      service:
+        name: prometheus-node-exporter
+        state: started
+        enabled: yes
+
+    - name: start mariadb
+      when: server == mariadb
+      service:
+        name: mariadb
+        state: started
+        enabled: yes
+
+    - name: start prometheus-mysqld-exporter
+      when: server == mariadb
+      service:
+        name: prometheus-mysqld-exporter
+        state: started
+        enabled: yes
+
+    # - name: Create database user
+    #   when: server == mariadb
+    #   community.mysql.mysql_user:
+    #     login_unix_socket: /var/run/mysqld/mysqld.sock
+    #     name: exporter
+    #     password: exporter
+    #     login_user: root
+    #     priv: '*.*:ALL,GRANT'
+    #     state: present
+
+    - name: configure nftables
+      when: server == mariadb
+      template:
+        src: templates/nftablesconf.j2
+        dest: /etc/nftables.conf
+        mode: 755
+
+    - name: restart nftables
+      when: server == mariadb
+      service:
+        name: nftables
+        state: restarted
