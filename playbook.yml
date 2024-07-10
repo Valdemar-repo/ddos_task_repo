@@ -78,7 +78,7 @@
     - name: clone metric vars_files
       when: server == "observability"
       copy:
-        src: files/monitoring
+        src: files/monitoring/*
         dest: /root/ddos_task_host
         mode: 755
 
