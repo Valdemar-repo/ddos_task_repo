@@ -7,3 +7,4 @@
 
 
 не доделан dashboard для mariadb, не внесен ip в templates/prometheus.yml.j2 через gather_facts
+если при повторной накатке таска "Ensure exporter user exists with correct privileges" вызывает ошибку, закомментируйте её и пропустите (допилить идемпотентность)
