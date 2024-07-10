@@ -2,5 +2,5 @@
 - name:  Check and install deps
   include_tasks: 'tasks/install-deps.yml'
 
-- name:  Add proxy for docker hub
-  include_tasks: 'tasks/add-proxy.yml'
+# - name:  Add proxy for docker hub
+#   include_tasks: 'tasks/add-proxy.yml'

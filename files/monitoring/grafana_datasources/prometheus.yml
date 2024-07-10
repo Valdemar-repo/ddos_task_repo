@@ -1,0 +1,11 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    basicAuth: false
+    orgId: 1
+    readOnly: false
+    uid: prometh
+    url: http://prometheus:9090
+    access: proxy

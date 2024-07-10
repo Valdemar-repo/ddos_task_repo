@@ -12,11 +12,11 @@
 
   roles:
     - role: docker
-      when: server == observability
+      when: server == "observability"
 
   tasks:
     - name: install prometheus-node-exporter, mariadb, prometheus-mysqld-exporter
-      when: server == mariadb
+      when: server == "mariadb"
       apt:
         name: 
           - prometheus-node-exporter
@@ -24,28 +24,28 @@
           - prometheus-mysqld-exporter
 
     - name: add config .my.cnf
-      when: server == mariadb
+      when: server == "mariadb"
       template:
         src: templates/.my.cnf.j2
         dest: /var/lib/prometheus/.my.cnf
         mode: 644
 
     - name: start prometheus-node-exporter
-      when: server == mariadb
+      when: server == "mariadb"
       service:
         name: prometheus-node-exporter
         state: started
         enabled: yes
 
     - name: start mariadb
-      when: server == mariadb
+      when: server == "mariadb"
       service:
         name: mariadb
         state: started
         enabled: yes
 
     - name: start prometheus-mysqld-exporter
-      when: server == mariadb
+      when: server == "mariadb"
       service:
         name: prometheus-mysqld-exporter
         state: started
@@ -62,14 +62,41 @@
     #     state: present
 
     - name: configure nftables
-      when: server == mariadb
+      when: server == "mariadb"
       template:
         src: templates/nftablesconf.j2
         dest: /etc/nftables.conf
         mode: 755
 
     - name: restart nftables
-      when: server == mariadb
+      when: server == "mariadb"
       service:
         name: nftables
         state: restarted
+
+    - name: clone metric vars_files
+      when: server == "observability"
+      copy:
+        src: files/monitoring
+        dest: /root/ddos_task_host
+        mode: 755
+
+    - name: get prometheus config
+      when: server == "observability"
+      template:
+        src: templates/prometheus.yml.j2
+        dest: /root/ddos_task_host/prometheus_conf/prometheus.yml
+        mode: 755
+
+    - name: get docker-compose.yml
+      when: server == "observability"
+      template:
+        src: templates/docker-compose.yml.j2
+        dest: /root/ddos_task_host/docker-compose.yml
+        mode: 755
+
+    - name: up monitoring
+      when: server == "observability"
+      shell: "docker compose up -d"
+      args:
+        chdir: /root/ddos_task_host
