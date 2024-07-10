@@ -30,6 +30,28 @@
         src: templates/.my.cnf.j2
         dest: /var/lib/prometheus/.my.cnf
         mode: 644
+    
+    - name: Install python-mysqldb
+      when: server == "mariadb"
+      apt:
+        name: python3-mysqldb
+        state: present
+        update_cache: yes
+
+    - name: Ensure exporter user exists with correct privileges
+      when: server == "mariadb"
+      mysql_user:
+        login_user: root
+        login_password: bool
+        name: exporteruser
+        password: exporterpassword
+        host: 'localhost'
+        priv: "*.*:SELECT,PROCESS,REPLICATION CLIENT"
+        state: present
+
+    - name: Flush privileges
+      when: server == "mariadb"
+      command: "mysql -u root -e 'FLUSH PRIVILEGES;'"
 
     - name: start prometheus-node-exporter
       when: server == "mariadb"
@@ -51,16 +73,6 @@
         name: prometheus-mysqld-exporter
         state: started
         enabled: yes
-
-    # - name: Create database user
-    #   when: server == mariadb
-    #   community.mysql.mysql_user:
-    #     login_unix_socket: /var/run/mysqld/mysqld.sock
-    #     name: exporter
-    #     password: exporter
-    #     login_user: root
-    #     priv: '*.*:ALL,GRANT'
-    #     state: present
 
     - name: configure nftables
       when: server == "mariadb"
