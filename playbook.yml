@@ -82,6 +82,12 @@
         dest: /root/
         mode: 755
 
+    - name: create prometheus dir
+      file:
+        path: /root/ddos_task_host/prometheus_conf
+        state: directory
+        mode: 755
+
     - name: get prometheus config
       when: server == "observability"
       template:
