@@ -29,7 +29,7 @@
       template:
         src: templates/.my.cnf.j2
         dest: /var/lib/prometheus/.my.cnf
-        mode: 644
+        mode: 0644
     
     - name: Install python-mysqldb
       when: server == "mariadb"
