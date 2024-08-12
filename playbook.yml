@@ -10,18 +10,34 @@
   vars_files:
     - vars/main.yml
 
-  roles:
-    - role: docker
-      when: server == "observability"
+#  roles:
+#    - role: docker
+#      when: server == "observability"
 
   tasks:
-    - name: install prometheus-node-exporter, mariadb, prometheus-mysqld-exporter
+
+    - name: download script for docker
+      when: server == "observability"
+      shell: curl -fsSL https://get.docker.com -o get-docker.sh
+
+    - name: activate script for docker
+      when: server == "observability"
+      shell: sh get-docker.sh
+
+    - name: remove script for docker
+      when: server == "observability"
+      file:
+        path: get-docker.sh
+        state: absent
+
+    - name: install prometheus-node-exporter, mariadb, prometheus-mysqld-exporter, nftables
       when: server == "mariadb"
       apt:
-        name: 
+        name:
           - prometheus-node-exporter
           - mariadb-server
           - prometheus-mysqld-exporter
+          - nftables
         update_cache: True
 
     - name: add config .my.cnf
@@ -30,7 +46,7 @@
         src: templates/.my.cnf.j2
         dest: /var/lib/prometheus/.my.cnf
         mode: 0644
-    
+
     - name: Install python-mysqldb
       when: server == "mariadb"
       apt:
@@ -113,6 +129,12 @@
         src: templates/docker-compose.yml.j2
         dest: /root/ddos_task_host/docker-compose.yml
         mode: 0755
+
+    - name: restart docker
+      when: server == "observability"
+      service:
+        name: docker
+        state: restarted
 
     - name: up monitoring
       when: server == "observability"

@@ -12,13 +12,13 @@
 
 - name: Add apt keyring for docker
   apt_key:
-    url: https://download.docker.com/linux/debian/gpg
+    url: https://download.docker.com/linux/ubuntu/gpg
     keyring: /etc/apt/keyrings/docker.asc
     state: present
 
 - name: Add docker repo for apt
   apt_repository:
-    repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian {{ ansible_lsb.codename }} stable
+    repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable
     state: present
     filename: docker-ce
 
